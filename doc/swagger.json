@@ -1,0 +1,150 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "API handling NLP for Suricats' Surirobot",
+    "version": "1.0.0",
+    "title": "Suribot",
+    "termsOfService": "",
+    "contact": {
+      "email": "nicolas.gorrity@gmail.com"
+    },
+    "license": {
+      "name": "ISC",
+      "url": "https://www.gnu.org/licenses/license-list.html#ISC"
+    }
+  },
+  "host": "address.server.fr",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "getintent",
+      "description": "Receive the intent related to the user input sentence"
+    },
+    {
+      "name": "getanswer",
+      "description": "Receives an answer appropriate to the user input sentence"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/getintent": {
+      "post": {
+        "tags": [
+          "getintent"
+        ],
+        "summary": "Retrieves all metadata and intents from a sentence.",
+        "description": "",
+        "operationId": "getintent",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User input JSON object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IntentQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "503": {
+            "description": "Service unavailable"
+          }
+        }
+      }
+    },
+    "/getanswer": {
+      "post": {
+        "tags": [
+          "getanswer"
+        ],
+        "summary": "Retrieves answer and all metadata and intents from a sentence.",
+        "description": "",
+        "operationId": "getanswer",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User input JSON object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AnswerQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "503": {
+            "description": "Service unavailable"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "IntentQuery": {
+      "type": "object",
+      "required": [
+        "text",
+        "language"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "example": "Salut Surirobot !"
+        },
+        "language": {
+          "type": "string",
+          "description": "User input language",
+          "enum": [
+            "fr",
+            "en"
+          ]
+        }
+      }
+    },
+    "AnswerQuery": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "example": "Salut Surirobot !"
+        },
+        "conversation_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "User conversation id",
+          "default": "ABCDE-12345"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Suribot-NLP-Recast",
+  "version": "1.0.0",
+  "description": "NLP API for Surirobot",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "author": "Switch for Suricats",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "superagent": "^3.8.1"
+  }
+}

@@ -1,0 +1,5 @@
+nbproject/**
+node_modules/**
+src/config.js
+.env
+*.log

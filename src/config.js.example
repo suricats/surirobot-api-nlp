@@ -1,0 +1,4 @@
+process.env.PORT = '6902';
+process.env.DEV_TOKEN = '<TOKEN>';
+process.env.LANGUAGE = 'fr';
+
