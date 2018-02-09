@@ -13,7 +13,7 @@
       "url": "https://www.gnu.org/licenses/license-list.html#ISC"
     }
   },
-  "host": "address.server.fr",
+  "host": "https://nlp.api.surirobot.net",
   "basePath": "/",
   "tags": [
     {
