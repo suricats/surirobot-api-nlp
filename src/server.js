@@ -17,10 +17,12 @@ app.use(bodyParser.json({
 
 app.post('/getintent', (request, response) => {
 	if (!request.body.text  || !request.body.language) {
-		response.status(400).send('Bad request content');
+		response.status(400).send('Bad request content: missing text or language field');
+		console.log('Error in NLP request /getintent: Bad request content: missing text or language field.');
 		return;
 	}
-	console.log(request.body);
+	console.log("Request text: " + request.body.text);
+	console.log("Request language: " + request.body.language);
 
 	const req = require('superagent');
 
@@ -33,7 +35,8 @@ app.post('/getintent', (request, response) => {
 		var statusMessage = res.text.message;
 		if (err) {
 			console.log('Error in /getintent :', err) 
-			response.status(400).send(statusMessage);
+			console.log("Error in NLP request /getintent from external API: it returned the following message: " + statusMessage);
+			response.status(400).send("Error in NLP request /getintent from external API: it returned the following message: " + statusMessage);
 		} else {
 			console.log(JSON.parse(res.text));	
 			response.send(JSON.parse(res.text));
@@ -43,12 +46,13 @@ app.post('/getintent', (request, response) => {
 
 app.post('/getanswer', (request, response) => {
 	if (!request.body.text) {
-		response.status(400).send('Bad request content');
+		response.status(400).send("Bad request content: missing field 'text'");
+		console.log('Error in NLP request /getanswer: Bad request content: missing text field.');
 		return;
 	}
-	console.log(request.body);
 
 	var text = request.body.text;
+	console.log("Request text: " + request.body.text);
 
 	var id='ABCDE-12345';
 	if (request.body.conversation_id) id=request.body.conversation_id;
@@ -64,8 +68,9 @@ app.post('/getanswer', (request, response) => {
   	.end((err, res) => {
 		var statusMessage = res.text.message;
 		if (err) {
-			console.log('Error in /getanswer :', err) 
-			response.status(400).send(statusMessage);
+			console.log('Error in /getanswer :', err);
+			console.log("Error in NLP request /getanswer from external API: it returned the following message: " + statusMessage); 
+			response.status(400).send("Error in NLP request /getanswer from external API: it returned the following message: " + statusMessage);
 		} else {
 			console.log(JSON.parse(res.text));	
 			response.send(JSON.parse(res.text));
