@@ -36,7 +36,7 @@ app.post('/getintent', (request, response) => {
 		if (err) {
 			console.log('Error in /getintent :', err) 
 			console.log("Error in NLP request /getintent from external API: it returned the following message: " + statusMessage);
-			response.status(400).send("Error in NLP request /getintent from external API: it returned the following message: " + statusMessage);
+			response.status(503).send("Error in NLP request /getintent from external API: it returned the following message: " + statusMessage);
 		} else {
 			console.log(JSON.parse(res.text));	
 			response.send(JSON.parse(res.text));
@@ -70,10 +70,71 @@ app.post('/getanswer', (request, response) => {
 		if (err) {
 			console.log('Error in /getanswer :', err);
 			console.log("Error in NLP request /getanswer from external API: it returned the following message: " + statusMessage); 
-			response.status(400).send("Error in NLP request /getanswer from external API: it returned the following message: " + statusMessage);
+			response.status(503).send("Error in NLP request /getanswer from external API: it returned the following message: " + statusMessage);
 		} else {
 			console.log(JSON.parse(res.text));	
 			response.send(JSON.parse(res.text));
+		}
+	});
+})
+
+app.post('/updateMemory', (request, response) => {
+	if (!request.body.field  || !request.body.userId) {
+		response.status(400).send("Bad request content: missing 'field' or 'userId' field");
+		console.log("Error in NLP request /updateMemory: Bad request content: missing 'field' or 'userId' field.");
+		return;
+	}
+	var field = request.body.field;
+	var value = request.body.value;
+	var userId = request.body.userId;
+	console.log("Field to update: " + field);
+	console.log("Value to write: " + value);
+	console.log("User ID: " + userId);
+
+	const req = require('superagent');
+	var url = 'https://api.recast.ai/build/v1/users/'+process.env.RECAST_USER_SLUG+'/bots/'+process.env.RECAST_BOT_SLUG+'/builders/v1/conversation_states/' + request.body.userId;
+
+	///GET CONVERSATION MEMORY STATE
+	req
+	.get(url)
+	.set('Authorization', 'Token '+process.env.DEV_TOKEN)
+  	.end((err, res) => {
+		var statusMessage = res.text.message;
+		if (err) {
+			console.log('Error in /updateMemory :', err) 
+			console.log("Error in NLP request /updateMemory from external API: it returned the following message: " + statusMessage);
+			response.status(503).send("Error in NLP request /updateMemory from external API: it returned the following message: " + statusMessage);
+		} else {
+			var answer = JSON.parse(res.text);
+			///DELETE THE FIELD TO MODIFY IF NO VALUE IS SPECIFIED
+			if (value==="") delete answer.results.memory[field];
+
+			///CASE USERNAME
+			else if (field === "username") {
+				console.log(field + 'is being deleted from conversation memory ' + userId);
+				answer.results.memory[field] = {
+					"fullname": value,
+					"raw": value,
+					"confidence": 0.99
+				};
+			}
+
+			///WRITE THIS NEW MEMORY IN BOT
+			req
+			.put(url)
+			.set('Authorization', 'Token '+process.env.DEV_TOKEN)
+		  	.set('Content-Type', 'application/json')
+			.send({memory: answer.results.memory})
+		  	.end((err2, res2) => {
+				var statusMessage2 = res2.text.message;
+				if (err2) {
+					console.log('Error in /updateMemory :', err2);
+					console.log("Error in NLP request /updateMemory from external API: it returned the following message: " + statusMessage2); 
+					response.status(503).send("Error in NLP request /updateMemory from external API: it returned the following message: " + statusMessage2);
+				} else {
+					response.send(JSON.parse(res2.text));
+				}
+			});
 		}
 	});
 })
@@ -104,7 +165,7 @@ app.post('/channel', (request, response) => {
 		var statusMessage = res.text.message;
 		if (err) {
 			console.log('Error in /messenger:', err) 
-			response.status(400).send(statusMessage);
+			response.status(503).send(statusMessage);
 		} else {
 			var returnedJSON = JSON.parse(res.text);
 			var statusCode = returnedJSON.results.nlp.status;

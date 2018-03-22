@@ -15,7 +15,7 @@ npm install
 cp src/config.js.example src/config.js
 ```
 
-Fill src/config.js with your Recast API KEY and choose the server port or use the suri downloader:
+Fill src/config.js with your Recast API KEY, User slug and Bot slug, and choose the server port or use the suri downloader:
 
  ```
 cp .env.example .env

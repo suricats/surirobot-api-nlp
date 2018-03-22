@@ -1,4 +1,5 @@
 process.env.PORT = '6902';
-process.env.DEV_TOKEN = '<TOKEN>';
+process.env.DEV_TOKEN = '<DEV_TOKEN>';
 process.env.LANGUAGE = 'fr';
-
+process.env.RECAST_USER_SLUG = '<USER_SLUG>';
+process.env.RECAST_BOT_SLUG = '<BOT_SLUG>';

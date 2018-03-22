@@ -23,6 +23,10 @@
     {
       "name": "getanswer",
       "description": "Receives an answer appropriate to the user input sentence"
+    },
+    {
+      "name": "updateMemory",
+      "description": "writes a field in the bot memory for the specified conversation"
     }
   ],
   "schemes": [
@@ -104,7 +108,48 @@
           }
         }
       }
-    }
+    },
+	"/updateMemory": {
+      "post": {
+      	"tags": [
+      	  "updateMemory"
+		],
+      	"summary": "writes a field in the bot memory for the specified conversation",
+      	"description": "",
+      	"operationId": "updatememory",
+      	"consumes": [
+      	  "application/json"
+		],
+      	"produces": [ 
+     	  "application/json"
+		],
+      	"parameters": [
+      	  {
+			"$ref": "#/definitions/InputUpdateMemory"
+		  }
+		],
+      	"responses": {
+          "200": {
+            "description": "Ok",
+          	"schema": {
+              "$ref": "#/definitions/InputUpdateMemory"
+			}
+		  },
+          "400": {
+          	"description": "Bad request",
+          	"schema": {
+              "$ref": "#/definitions/OutputError"
+			}
+		  },
+          "503": {
+          	"description": "Service unavailable",
+          	"schema": {
+              "$ref": "#/definitions/OutputError"
+			}
+		  }
+		}
+	  }
+	}
   },
   "definitions": {
     "IntentQuery": {
@@ -145,6 +190,35 @@
           "default": "ABCDE-12345"
         }
       }
-    }
+    },
+	"OutputError": {
+		"properties": {
+			"answerText": {
+				"type": "string"
+			}
+		}
+	},
+	"InputUpdateMemory": null,
+	"type": "object",
+	"description": "See description of InputUpdateMemory object",
+	"required": [
+		"field",
+		"value",
+		"userId"
+	],
+	"properties": {
+		"field": {
+			"type": "string",
+			"example": "username"
+		},
+		"value": {
+			"type": "string",
+			"example": "Dupont"
+		},
+		"userId": {
+			"type": "string",
+			"example": "dupont-123"
+		}
+	}
   }
 }
